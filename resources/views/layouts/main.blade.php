@@ -22,7 +22,6 @@
 
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <!--end::Base Styles -->
-    <link rel="shortcut icon" href="{{ asset('assets/demo/default/media/img/logo/logo.svg') }}" />
 
 </head>
 
@@ -35,67 +34,10 @@
 
     <!-- begin:: Page -->
     <div class="m-grid m-grid--hor m-grid--root m-page">
-
-        <!-- BEGIN: Header -->
-        <header id="m_header" class="m-grid__item m-header ">
-            <div class="m-container m-container--fluid m-container--full-height">
-                <div class="m-stack m-stack--ver m-stack--desktop">
-
-                    <!-- BEGIN: Brand -->
-                    <div class="m-stack__item m-brand" style="background: #363740 !important">
-                        <div class="m-stack m-stack--ver m-stack--general">
-                            <div class="m-stack__item m-stack__item--middle m-brand__logo">
-                            </div>
-                            <div class="m-stack__item m-stack__item--middle m-brand__tools">
-                                <!-- BEGIN: Responsive Aside Left Menu Toggler -->
-                                <a href="javascript:;" id="m_aside_left_offcanvas_toggle"
-                                    class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block">
-                                    <span></span>
-                                </a>
-
-                                <!-- END -->
-
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- END: Brand -->
-                    <div class="m-stack__item m-stack__item--fluid m-header-head" id="m_header_nav"
-                        style="background: #F7F8FC !important; box-shadow:none">
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- END: Header -->
-
-        <!-- begin::Body -->
+         <!-- begin::Body -->
         <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
 
-            <!-- BEGIN: Left Aside -->
-            <button class="m-aside-left-close  m-aside-left-close--skin-dark " id="m_aside_left_close_btn">
-                <i class="la la-close"></i>
-            </button>
-            <div id="m_aside_left" class="m-grid__item	m-aside-left  m-aside-left--skin-dark ">
 
-                <!-- BEGIN: Aside Menu -->
-                <div id="m_ver_menu" class="m-aside-menu  m-aside-menu--skin-dark" m-menu-vertical="1"
-                    m-menu-scrollable="1" m-menu-dropdown-timeout="500"
-                    style="position: relative;background: #363740 !important">
-                    <ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
-                        <li class="m-menu__item " aria-haspopup="true">
-                            <a href="{{ route('index') }}" class="m-menu__link ">
-                                <img src="{{ asset('images/side-icons/passengers.svg') }}" alt="">
-                                <span class="m-menu__link-text menu-span">Usuários</span>
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-
-                <!-- END: Aside Menu -->
-            </div>
-            <!-- END: Left Aside -->
 
             <div class="m-grid__item m-grid__item--fluid m-wrapper" style="background: #F7F8FC !important">
                 @yield('container')

@@ -1,55 +1,53 @@
 @extends('layouts.main')
 
-@section('title', 'Passageiros')
+@section('title', 'Usuários')
 
 @push('css')
 
 @endpush
 
 @section('container')
-    <div class="main-container">
-        <h1 class="page-title">Passageiros</h1>
-        <div class="d-flex justify-content-end">
-            <a href="{{ route('passengers.create') }}"><button class="btn-default btn-green mr-4">Cadastrar</button></a>
-            <button class="btn-default btn-blue ml-2 mr-1" data-toggle="modal" data-target="#filterModal">Filtrar</button>
+    <div class="main-container index-container">
+
+        <div class="d-flex justify-content-start">
+            <h1 class="page-title">Usuários</h1>
+            <a class="ml-auto" href=""><button class="btn-default btn-green mr-4">Cadastrar</button></a>
         </div>
 
         <div class="main-card blue-card">
             <div class="table-responsive">
                 <table id="table-id" class="table table-stripped dt-bootstrap5">
                     <thead>
-                        <th class="first-column">Cód.</th>
-                        <th>Nome</th>
-                        <th>Sexo</th>
-                        <th>Nascimento</th>
-                        <th>Cód. País</th>
-                        <th>E. Cívil</th>
-                        <th>Responsável</th>
-                        <th class="last-column">Ações</th>
+                        <th class="first-column" style="width:30px">Cód.</th>
+                        <th style="width:200px">Nome</th>
+                        <th style="width:80px">Nascimento</th>
+                        <th style="width:150px">CPF</th>
+                        <th style="width:100px">Sexo</th>
+                        <th style="width:200px">Email</th>
+                        <th class="last-column" style="80px">Ações</th>
                     </thead>
                     <tbody>
-                        {{-- @foreach ($passengers as $passenger)
-                            <tr id="linha-{{ $passenger->CD_PSGR }}">
-                                <td class="first-column">{{ $passenger->CD_PSGR }}</td>
-                                <td>{{ $passenger->NM_PSGR }}</td>
-                                <td>{{ $passenger->IC_SEXO_PSGR }}</td>
-                                <td>{{ $passenger->DT_NASC_PSGR }}</td>
-                                <td>{{ $passenger->CD_PAIS }}</td>
-                                <td>{{ $passenger->IC_ESTD_CIVIL }}</td>
-                                <td>{{ $passenger->CD_PSGR_RESP }}</td>
+                        {{-- @foreach ($users as $user)
+                            <tr id="linha-{{ $user->id }}">
+                                <td class="first-column">{{ $user->id }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->birth }}</td>
+                                <td>{{ $user->cpf }}</td>
+                                <td>{{ $user->sex }}</td>
+                                <td>{{ $user->email }}</td>
                                 <td class="last-column">
                                     <div class="d-flex justify-content-center">
-                                        <button id="edit-{{ $passenger->CD_PSGR }}" class="icon icon-edit"
+                                        <button id="edit-{{ $user->id }}" class="icon icon-edit"
                                             data-toggle="modal" data-target="#editModal">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button" form="delete_{{ $passenger->CD_PSGR }}"
+                                        <button type="button" form="delete_{{ $user->id }}"
                                             class="icon icon-delete" data-toggle="modal" data-target="#deleteModal">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                         <form method="POST"
-                                            action="{{ route('passengers.destroy', $passenger->CD_PSGR) }}"
-                                            id="delete_{{ $passenger->CD_PSGR }}" class="form-delete-client">
+                                            action="{{ route('users.destroy', $user->id) }}"
+                                            id="delete_{{ $user->id }}" class="form-delete-client">
                                             @csrf
                                             @method('DELETE')
                                         </form>
@@ -69,13 +67,13 @@
             <div class="modal-content modal-content-delete">
                 <div class="modal-header-delete text-white">
                     <h5 class="modal-title" id="deleteModalLabel">
-                        Deletar linha de Passageiros
+                        Deletar linha de Usuários
                     </h5>
                 </div>
 
                 <div class="modal-body">
                     <p class="modal-text">
-                        Deseja realmente deletar o Passageiro
+                        Deseja realmente deletar o Usuário
                         <span id="delete-code-em"></span>?
                     </p>
                     <div class="btn-div d-flex justify-content-end">
@@ -97,7 +95,7 @@
             <div class="modal-content modal-content-default">
                 <div class="modal-header-default text-white">
                     <h5 class="modal-title" id="editModalLabel">
-                        Editar tabela de Passageiros
+                        Editar tabela de Usuários
                     </h5>
                 </div>
 
@@ -107,68 +105,58 @@
                         <div class="form-row">
                             <div class="col-md-6 px-5 my-2 my-md-4">
                                 <label class="register-label" for="">Nome</label>
-                                <input class="register-input" name="NM_PSGR" type="text" placeholder="Insira o nome">
+                                @error('name')
+                                    <small class="text-danger ml-3">{{ $message }}</small>
+                                @enderror
+                                <input class="register-input" name="name" type="text" placeholder="Insira o nome" value="{{ old('name') }}">
+
+                            </div>
+                            <div class="col-md-6 px-5 my-2 my-md-4">
+                                <label class="register-label" for="">Nascimento</label>
+                                <input class="register-input date" name="birth" type="text" placeholder="Insira a data de nascimento" value="{{ old('birth') }}">
+                                @error('birth')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 px-5 my-2 my-md-4">
+                                <label class="register-label" for="">CPF</label>
+                                <input class="register-input cpf" name="cpf" type="text" placeholder="Insira o cpf" value="{{ old('cpf') }}">
+                                @error('cpf')
+                                    <small class="text-danger">{{ $message }}o</small>
+                                @enderror
                             </div>
                             <div class="col-md-6 px-5 my-2 my-md-4">
                                 <label class="register-label" for="">Sexo</label>
                                 <div class="custom-select-2">
-                                    <select class="register-input" name="IC_SEXO_PSGR">
+                                    <select class="register-input" name="sex">
                                         <option value="">Selecione seu sexo</option>
                                         <option value="M">Masculino</option>
                                         <option value="F">Feminino</option>
                                         <option value="O">Outros</option>
                                     </select>
                                 </div>
+                                @error('sex')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 px-5 my-2 my-md-4">
+                                <label class="register-label" for="">Email</label>
+                                <input class="register-input" name="email" type="text" placeholder="Insira o email" value="{{ old('email') }}">
+                                @error('email')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 px-5 my-2 my-md-4">
+                                <label class="register-label" for="">Senha</label>
+                                <input class="register-input" name="password" type="text" placeholder="Insira a senha" value="{{ old('password') }}">
+                                @error('password')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
 
-                            </div>
-                            <div class="col-md-6 px-5 my-2 my-md-4">
-                                <label class="register-label" for="">Nascimento</label>
-                                <input class="register-input date" name="DT_NASC_PSGR" type="text" placeholder="Insira a data de nascimento">
-                            </div>
-                            <div class="col-md-6 px-5 my-2 my-md-4">
-                                <label class="register-label" for="">País de Origem</label>
-                                <div class="custom-select-2">
-                                    <select class="register-input" name="CD_PAIS">
-                                        <option value="">Selecione o país de origem</option>
-                                    </select>
-                                </div>
 
-                            </div>
-                            <div class="col-md-6 px-5 my-2 my-md-4">
-                                <label class="register-label" for="">Estado Cívil</label>
-                                <div class="custom-select-2">
-                                    <select class="register-input" name="IC_ESTD_CIVIL">
-                                        <option value="">Selecione o estado cívil</option>
-                                        <option value="">Solteiro(a)</option>
-                                        <option value="">Casado(a)</option>
-                                        <option value="">Separado(a)</option>
-                                        <option value="">Divorciado(a)</option>
-                                        <option value="">Viúvo(a)</option>
 
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 px-5 my-2 my-md-4">
-                                <label class="register-label" for="">Tem Responsável</label>
-                                <div class="d-flex">
-                                    <div class="d-flex justify-content-center">
-                                        <label class="radio-container mr-1">
-                                            <input class="radio-input" type="radio" name="has_responsible" value="0">
-                                            <span class="radio-span"></span>
-                                        </label>
-                                        <div class="register-label ml-4">Não</div>
-                                    </div>
-                                    <div class="d-flex justify-content-center ml-5">
-                                        <label class="radio-container mr-1">
-                                            <input class="radio-input" type="radio" name="has_responsible" value="1">
-                                            <span class="radio-span"></span>
-                                        </label>
-                                        <div class="register-label ml-4">Sim</div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
                         <div class="btn-div d-flex justify-content-end">
                             <button type="button" class="delete-dismiss btn-default btn-red"
                                 data-dismiss="modal">Cancelar</button>
@@ -277,7 +265,7 @@
                 let id = $(this).attr('id').split('-')[1];
                 let td_array = $(`#linha-${id}`).children();
                 let input_array = $('#edit-form :input');
-                $('#edit-form').attr('action', "<?= route('passengers.update', ['_id_']) ?>".replace('_id_', id));
+                //$('#edit-form').attr('action', "route('users.update', ['_id_']) ?>".replace('_id_', id));
                 // -1 no for pq ignoramos o @crf e o campo com o id
                 for (i = 0; i < td_array.length - 1; i++) {
                     if (input_array.eq(i).attr('type') == "hidden") continue;
@@ -304,8 +292,8 @@
 
                 $.ajax({
                     method: 'GET',
-                    url: "<?= route('passengers.filter', ['_civil_', '_sex_']) ?>".replace(
-                        '_civil_', civil).replace('_sex_', sex),
+                    // url: " route('users.filter', ['_civil_', '_sex_']) ?>".replace(
+                    //     '_civil_', civil).replace('_sex_', sex),
                     success: res => {
                         $('#filter-table-container').fadeIn();
                         $('#filter-table-body').fadeOut('swing', function() {
@@ -315,13 +303,13 @@
                                 $('#filter-table-body').html('');
                             }
 
-                            for (let passenger of res.passengers) {
+                            for (let user of res.users) {
                                 $('#filter-table-body').append(`
                                     <tr>
-                                        <td class="first-column">${passenger.NM_PSGR}</td>
-                                        <td>${passenger.ID_PSGR || 'Não Informado'}</td>
-                                        <td>${passenger.DT_NASC_PSGR != null ? passenger.DT_NASC_PSGR.split('/').reverse().join('/') : 'Não Informado'}</td>
-                                        <td class="last-column">${passenger.ID_PSGR != null ? (passenger.ID_PSGR > res.avg_age ? 'Sim' : 'Não') : '---'}</td>
+                                        <td class="first-column">${user.NM_PSGR}</td>
+                                        <td>${user.ID_PSGR || 'Não Informado'}</td>
+                                        <td>${user.DT_NASC_PSGR != null ? user.DT_NASC_PSGR.split('/').reverse().join('/') : 'Não Informado'}</td>
+                                        <td class="last-column">${user.ID_PSGR != null ? (user.ID_PSGR > res.avg_age ? 'Sim' : 'Não') : '---'}</td>
                                     </tr>
                                 `);
                             }

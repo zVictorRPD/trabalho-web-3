@@ -1,52 +1,26 @@
-.main-container{
+.main-container {
     padding: 0 2.5rem;
-
-    .page-title{
+    .page-title {
         margin-bottom: 3rem;
         font-size: 32px;
+        max-width: 1100px;
+        margin: 0 auto;
+        margin-top: 14rem;
     }
-    .sub-title{
+    .sub-title {
         font-size: 22px;
         margin-bottom: 0rem;
     }
 
-    .general-statistics{
-        margin-bottom: 6rem;
-        .box-containers{
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            .statistics-box{
-                margin: 1rem;
-                width: 320px;
-                height: 130px;
-                background: $white;
-                border-radius: 4px;
-                padding: 1.75rem 2rem;
-                border: 1px solid $nav-text-active;
-                h3{
-                    font-size: 20px;
-                    color: $light-gray;
-                    text-align: center;
-                }
-                h2{
-                    text-align: center;
-                    font-size: 40px;
-                    color: $black;
-                }
-            }
-        }
-    }
-
-    .main-card{
+    .main-card {
         margin: 1rem 0;
         background: $white;
         border-radius: 8px;
         border: 1px solid $nav-text-active;
-        ul{
+        ul {
             padding: 0;
             margin: 0;
-            a{
+            a {
                 text-decoration: none;
                 padding: 1.5rem 2rem;
                 color: $black;
@@ -55,24 +29,38 @@
                 width: 100%;
                 height: 100%;
             }
-            li{
+            li {
                 list-style: none;
-                & + li{
+                & + li {
                     border-top: 1px solid $nav-text-active;
                 }
             }
-            .second-li{
+            .second-li {
                 padding: 1.5rem 2rem;
                 display: flex;
-                span{
+                span {
                     font-size: 14px;
                     color: $black;
                     cursor: default;
                 }
-                .link-number{
+                .link-number {
                     margin-left: auto;
                 }
             }
+        }
+    }
+
+    &.index-container {
+        max-width: 1500px;
+        margin: 0 auto;
+        margin-top: 14rem;
+
+        .page-title {
+            margin-bottom: 3rem;
+            font-size: 32px;
+            max-width: 1500px;
+            margin: 0;
+
         }
     }
 }

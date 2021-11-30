@@ -24,12 +24,12 @@ class PassengerFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'NM_PSGR' => 'required|string|max:30',
-            'IC_SEXO_PSGR' => 'nullable|string|max:1',
-            'DT_NASC_PSGR' => 'nullable|date_format:d/m/Y',
-            'CD_PAIS' => 'nullable|exists:itr_pais,CD_PAIS',
-            'IC_ESTD_CIVIL' => 'required|in:C,S',
-            'CD_PSGR_RESP' => 'nullable|exists:itr_psgr,CD_PSGR'
+            'name' => 'required|string|max:30',
+            'birth' => 'nullable|date_format:d/m/Y',
+            'cpf' => 'nullable',
+            'sex' => 'nullable|string|max:1',
+            'email' => 'required|string|max:30',
+            'password' => 'nullable'
         ];
     }
 
@@ -38,10 +38,8 @@ class PassengerFormRequest extends FormRequest
         return [
             'required' => 'Campo Obrigatório',
             'string' => 'O campo precisa ser um texto válido',
-            'NM_PSGR.max' => 'O nome do passageiro deve ter até 30 letras',
-            'DT_NASC_PSGR.date_format' => 'A data de nascimento deve seguir o formato DD/MM/YYYY',
-            'CD_PAIS.exists' => 'Selecione um país válido',
-            'CD_PSGR_RESP.exists' => 'Selecione um responsável válido',
+            'name.max' => 'O nome do passageiro deve ter até 30 letras',
+            'birth.date_format' => 'A data de nascimento deve seguir o formato DD/MM/YYYY',
         ];
     }
 }

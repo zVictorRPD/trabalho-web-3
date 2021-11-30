@@ -12,12 +12,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        $passengers = User::all();
-        $countries = Country::all();
-
-        return view('passengers.index', compact('passengers'), [
-            'passengers' => $passengers,
-            'countries' => $countries,
+        $users = User::all();
+        return view('users.index', compact('users'), [
+            'users' => $users,
         ]);
     }
 
@@ -37,37 +34,31 @@ class UserController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
 
-            return back()->with('error', 'Erro na adição de um Passageiro: '.$e->getMessage());
+            return back()->with('error', 'Erro na adição de um Usuário: '.$e->getMessage());
         }
-        return redirect()->route('passengers.index')->with('success', 'Passageiro adicionado com sucesso!');
+        return redirect()->route('users.index')->with('success', 'Usuário adicionado com sucesso!');
 
     }
 
     public function create()
     {
-        $passengers = User::all();
-        $countries = Country::all();
-
-        return view('passengers.create', [
-            'passengers' => $passengers,
-            'countries' => $countries,
-        ]);
+        return view('users.create');
     }
 
     // show e edit
     public function getUser($id)
     {
-        if(!$passenger = User::find($id)) {
-            return response()->json('Este passageiro não existe! Tente recarregar a página.', 404);
+        if(!$user = User::find($id)) {
+            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
         }
 
-        return response()->json($passenger, 200);
+        return response()->json($user, 200);
     }
 
     public function update(UserFormRequest $request, $id)
     {
-        if(!$passenger = User::find($id)) {
-            return response()->json('Este passageiro não existe! Tente recarregar a página.', 404);
+        if(!$user = User::find($id)) {
+            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
         }
 
         $input = $request->except('_token');
@@ -78,68 +69,37 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-            $passenger->update($input);
+            $user->update($input);
 
             DB::commit();
         } catch(\Exception $e) {
             DB::rollback();
 
-            return response()->json("Erro na edição do Passageiro {$id}: ".$e->getMessage(), 500);
+            return response()->json("Erro na edição do Usuário {$id}: ".$e->getMessage(), 500);
         }
 
-        return response()->json(['message' => 'Passageiro atualizado com sucesso', 'passenger' => $passenger], 200);
+        return response()->json(['message' => 'Usuário atualizado com sucesso', 'user' => $user], 200);
     }
 
     public function destroy($id)
     {
-        if(!$passenger = User::find($id)) {
-            return response()->json('Este passageiro não existe! Tente recarregar a página.', 404);
+        if(!$user = User::find($id)) {
+            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
         }
 
         try {
             DB::beginTransaction();
 
-            $passenger->delete();
+            $user->delete();
 
             DB::commit();
         } catch(\Exception $e) {
             DB::rollback();
 
-            return response()->json("Erro na exclusão do Passageiro {$id}: ".$e->getMessage(), 500);
+            return response()->json("Erro na exclusão do Usuário {$id}: ".$e->getMessage(), 500);
         }
 
-        return response()->json('Passageiro excluido com sucesso!', 200);
+        return response()->json('Usuário excluido com sucesso!', 200);
     }
 
-    public function filter($civil, $sex)
-    {
-        if(!in_array($civil, ['null', 'C', 'S'])) {
-            return response()->json('Estado Civil inválido!', 400);
-        }
-
-        if(!in_array($sex, ['null', 'M', 'F', 'O'])) {
-            return response()->json('Sexo inválido!', 400);
-        }
-
-        $passengers = User::select('NM_PSGR', 'DT_NASC_PSGR');
-
-
-        if($civil != 'null') {
-            $passengers = $passengers->where('IC_ESTD_CIVIL', $civil);
-        }
-
-        if($sex != 'null') {
-            $passengers = $passengers->where('IC_SEXO_PSGR', $sex);
-        }
-
-        $passengers = $passengers->get();
-
-        foreach($passengers as $passenger) {
-            $passenger->getAge();
-        }
-
-        $avg_age = $passengers->avg('ID_PSGR');
-
-        return response()->json(['passengers' => $passengers, 'avg_age' => $avg_age], 200);
-    }
 }
