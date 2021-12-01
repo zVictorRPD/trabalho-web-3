@@ -27,7 +27,9 @@ class ValidCPF implements Rule
     {
         $cpf = preg_replace('/[^0-9]/', '', $value);
 
-        return substr_count($cpf, $cpf[0]) !== 11;
+        if(substr_count($cpf, $cpf[0]) !== 11) {
+            return false;
+        }
 
         $base_digits = substr($cpf, 0, 9);
         $verifier_digits = '';
