@@ -126,6 +126,7 @@ class popupAlert {
         popup.appendChild(progress);
 
         document.getElementById('alerts').appendChild(popup);
+        document.getElementById('alerts').style.zIndex = 10000;
 
         var width = 100;
         var progress_running = setInterval(progressRun, (this.time / 100));

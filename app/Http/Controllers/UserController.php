@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserFormRequest;
@@ -18,7 +19,24 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        return view('users.show', compact('user'));
+        $user->sex_abbrv = $user->sex;
+
+        switch($user->sex_abbrv) {
+            case 'M': 
+                $user->sex = 'Masculino';
+            break;
+
+            case 'F':
+                $user->sex = 'Feminino';
+            break;
+
+            default: 
+                $user->sex = 'Outro';
+        }
+
+        $user->birth = Carbon::parse($user->birth)->format('d/m/Y');
+
+        return response()->json($user, 200);
     }
 
     public function store(UserFormRequest $request)
@@ -35,9 +53,14 @@ class UserController extends Controller
             DB::commit();
         } catch(\Exception $e) {
             DB::rollback();
-            return back()->with('error', 'Erro na adição de um Usuário. Tente novamente mais tarde!');
+
+            return response()->json(['message' => 'Erro na adição de um Usuário. Tente novamente mais tarde!', 'error' => $e->getMessage()], 500);
         }
-        return redirect()->route('users.index')->with('success', 'Usuário adicionado com sucesso!');
+
+        return response()->json([
+            'message' => 'Usuário adicionado com sucesso!',
+            'redirect' => route('users.index'),
+        ], 200);
 
     }
 
@@ -46,28 +69,14 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    // show e edit
-    public function getUser($id)
+    public function update(UserFormRequest $request, User $user)
     {
-        if(!$user = User::find($id)) {
-            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
-        }
-
-        return response()->json($user, 200);
-    }
-
-    public function update(Request $request, User $user)
-    {
-        // if(!$user = User::find($id)) {
-        //     return back()->with('error', 'Este usuário não existe!');
-        // }
-
         $input = $request->except('_token', '_method', '_id');
 
         $input['birth'] = implode('/', array_reverse(explode('/', $input['birth'])));
-        if(is_null($input['password'])) unset($input['password']);
 
-        $input['password'] = bcrypt($input['password']);
+        if(is_null($input['password'])) unset($input['password']);
+        else $input['password'] = bcrypt($input['password']);
 
         try {
             DB::beginTransaction();
@@ -78,18 +87,17 @@ class UserController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
 
-            return back()->with('error', "Erro na edição do Usuário {$id}. Tente novamente mais tarde!");
+            return response()->json(['message' => "Erro na edição do Usuário {$user->name}. Tente novamente mais tarde!", 'error' => $e->getMessage()], 500);
         }
 
-        return redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso');
+        return response()->json([
+            'message' => 'Usuário atualizado com sucesso!',
+            'redirect' => route('users.index'),
+        ], 200);
     }
 
     public function destroy(User $user)
     {
-        // if(!$user = User::find($id)) {
-        //     return back()->with('error', 'Este usuário não existe!',);
-        // }
-
         try {
             DB::beginTransaction();
 
@@ -99,10 +107,13 @@ class UserController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
 
-            return back()->with('error', "Erro na exclusão do Usuário {$id}. Tente novamente mais tarde!");
+            return response()->json(['message' => "Erro na exclusão do Usuário {$id}. Tente novamente mais tarde!", 'error' => $e->getMessage()], 500);
         }
 
-        return redirect()->route('users.index')->with('success', 'Usuário excluido com sucesso!');
+        return response()->json([
+            'message' => 'Usuário excluido com sucesso!',
+            'redirect' => route('users.index'),
+        ], 200);
     }
 
 }

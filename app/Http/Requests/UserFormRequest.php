@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueCPF;
 use App\Rules\ValidPassword;
 use App\Rules\PasswordRequired;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +28,7 @@ class UserFormRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'cpf' => 'required',
+            'cpf' => ['required', new UniqueCPF],
             'birth' => 'required|date_format:d/m/Y',
             'sex' => 'required|in:M,F,O',
             'email' => 'required',
