@@ -14,10 +14,9 @@
             <div class="form-row">
                 <div class="col-md-6 px-5 my-2 my-md-4">
                     <label class="register-label" for="">Nome</label>
-                    <small id="name-error" class="text-danger ml-3" hidden></small>
                     <input class="register-input" name="name" type="text" placeholder="Insira o nome"
                         value="{{ old('name') }}">
-
+                        <small id="name-error" class="text-danger" hidden></small>
                 </div>
                 <div class="col-md-6 px-5 my-2 my-md-4">
                     <label class="register-label" for="">Nascimento</label>
@@ -88,7 +87,7 @@
                         birth: $('input[name=birth]').val(),
                         sex: $('select[name=sex]').val(),
                         email: $('input[name=email]').val(),
-                        password: $('input[name=password]').val() 
+                        password: $('input[name=password]').val()
                     },
                     success(res) {
                         btn.off('click');
@@ -98,7 +97,7 @@
 
                         setTimeout(() => {
                             location.href = res.redirect;
-                        }, 1500);                        
+                        }, 1500);
                     },
                     error(err) {
                         if(err.status === 422) {

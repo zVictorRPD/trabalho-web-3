@@ -39,7 +39,7 @@
                                     <div class="d-flex justify-content-center">
                                         <button id="show-{{ $user->id }}" class="icon icon-show">
                                             <i class="fas fa-eye text-secondary"></i>
-                                        </button> 
+                                        </button>
                                         <button id="edit-{{ $user->id }}" class="icon icon-edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -216,7 +216,7 @@
 
             $('.icon-show').on('click', function () {
                 const id = this.id.split('-')[1];
-                
+
                 $.ajax({
                     method: 'GET',
                     url: "<?= route('users.show', '_user') ?>".replace('_user', id),
@@ -270,7 +270,7 @@
                         select2.options.removeClass('same-as-selected');
 
                         switch(res.sex_abbrv) {
-                            case 'M': 
+                            case 'M':
                                 select2.options.eq(0).addClass('same-as-selected');
                             break;
 
@@ -278,7 +278,7 @@
                                 select2.options.eq(1).addClass('same-as-selected');
                             break;
 
-                            default: 
+                            default:
                                 select2.options.eq(2).addClass('same-as-selected');
                         }
 
@@ -397,6 +397,7 @@
             });
 
             $('.date').mask('00/00/0000');
+            $('.cpf').mask('000.000.000-00');
         });
     </script>
 
