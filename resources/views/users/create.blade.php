@@ -11,7 +11,7 @@
         <h1 class="page-title">Cadastro de Usuários</h1>
 
         <div class="register-card blue-card">
-            <form action="" method="POST">
+            <form action="{{ route('users.store') }}" method="POST">
                 @csrf
                 <div class="form-row">
                     <div class="col-md-6 px-5 my-2 my-md-4">
@@ -62,9 +62,8 @@
                         @enderror
                     </div>
                     <div class="col-md-6 px-5 my-2 my-md-4">
-                        <label class="register-label" for="">Senha</label>
-                        <input class="register-input" name="password" type="text" placeholder="Insira a senha"
-                            value="{{ old('password') }}">
+                        <label class="register-label" for="">Senha</label><i class="ml-2 fa fa-question-circle-o" data-toggle="tooltip" title="A senha deve conter apenas letras e/ou números"></i>
+                        <input class="register-input" name="password" type="password" placeholder="Insira a senha">
                         @error('password')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
@@ -84,6 +83,8 @@
 @push('js')
     <script>
         $(function() {
+            $('[data-toggle=tooltip]').tooltip();
+
             $('.custom-select-2').on('click', function() {
                 $(this).find('.select-selected').addClass('select-item-black');
             });

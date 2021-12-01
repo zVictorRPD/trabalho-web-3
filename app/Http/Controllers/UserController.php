@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Country;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,17 +12,20 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('users.index', compact('users'), [
-            'users' => $users,
-        ]);
+        
+        return view('users.index', compact('users'));
+    }
+
+    public function show(User $user)
+    {
+        return view('users.show', compact('user'));
     }
 
     public function store(UserFormRequest $request)
     {
         $input = $request->except('_token');
-
-        $input['NM_PSGR'] = strtoupper($input['NM_PSGR']);
-        $input['DT_NASC_PSGR'] = implode('/', array_reverse(explode('/', $input['DT_NASC_PSGR'])));
+        $input['birth'] = implode('-', array_reverse(explode('/', $input['birth'])));
+        $input['password'] = bcrypt($input['password']);
 
         try {
             DB::beginTransaction();
@@ -33,8 +35,7 @@ class UserController extends Controller
             DB::commit();
         } catch(\Exception $e) {
             DB::rollback();
-
-            return back()->with('error', 'Erro na adição de um Usuário: '.$e->getMessage());
+            return back()->with('error', 'Erro na adição de um Usuário. Tente novamente mais tarde!');
         }
         return redirect()->route('users.index')->with('success', 'Usuário adicionado com sucesso!');
 
@@ -55,16 +56,18 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
-    public function update(UserFormRequest $request, $id)
+    public function update(Request $request, User $user)
     {
-        if(!$user = User::find($id)) {
-            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
-        }
+        // if(!$user = User::find($id)) {
+        //     return back()->with('error', 'Este usuário não existe!');
+        // }
 
-        $input = $request->except('_token');
+        $input = $request->except('_token', '_method', '_id');
 
-        $input['NM_PSGR'] = strtoupper($input['NM_PSGR']);
-        $input['DT_NASC_PSGR'] = implode('/', array_reverse(explode('/', $input['DT_NASC_PSGR'])));
+        $input['birth'] = implode('/', array_reverse(explode('/', $input['birth'])));
+        if(is_null($input['password'])) unset($input['password']);
+
+        $input['password'] = bcrypt($input['password']);
 
         try {
             DB::beginTransaction();
@@ -75,17 +78,17 @@ class UserController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
 
-            return response()->json("Erro na edição do Usuário {$id}: ".$e->getMessage(), 500);
+            return back()->with('error', "Erro na edição do Usuário {$id}. Tente novamente mais tarde!");
         }
 
-        return response()->json(['message' => 'Usuário atualizado com sucesso', 'user' => $user], 200);
+        return redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso');
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        if(!$user = User::find($id)) {
-            return response()->json('Este usuário não existe! Tente recarregar a página.', 404);
-        }
+        // if(!$user = User::find($id)) {
+        //     return back()->with('error', 'Este usuário não existe!',);
+        // }
 
         try {
             DB::beginTransaction();
@@ -96,10 +99,10 @@ class UserController extends Controller
         } catch(\Exception $e) {
             DB::rollback();
 
-            return response()->json("Erro na exclusão do Usuário {$id}: ".$e->getMessage(), 500);
+            return back()->with('error', "Erro na exclusão do Usuário {$id}. Tente novamente mais tarde!");
         }
 
-        return response()->json('Usuário excluido com sucesso!', 200);
+        return redirect()->route('users.index')->with('success', 'Usuário excluido com sucesso!');
     }
 
 }

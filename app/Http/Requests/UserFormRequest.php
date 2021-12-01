@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidPassword;
+use App\Rules\PasswordRequired;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PassengerFormRequest extends FormRequest
+class UserFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +26,12 @@ class PassengerFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:30',
-            'birth' => 'nullable|date_format:d/m/Y',
-            'cpf' => 'nullable',
-            'sex' => 'nullable|string|max:1',
-            'email' => 'required|string|max:30',
-            'password' => 'nullable'
+            'name' => 'required',
+            'cpf' => 'required',
+            'birth' => 'required|date_format:d/m/Y',
+            'sex' => 'required|in:M,F,O',
+            'email' => 'required',
+            'password' => [new PasswordRequired, new ValidPassword]
         ];
     }
 
@@ -37,9 +39,13 @@ class PassengerFormRequest extends FormRequest
     {
         return [
             'required' => 'Campo Obrigatório',
-            'string' => 'O campo precisa ser um texto válido',
-            'name.max' => 'O nome do passageiro deve ter até 30 letras',
-            'birth.date_format' => 'A data de nascimento deve seguir o formato DD/MM/YYYY',
+            'date_format' => 'A data de nascimento deve estar no formato DD/MM/YYYY',
+            'in' => 'Selecione um sexo válido',
         ];
+    }
+
+    public function validateEmail()
+    {
+
     }
 }

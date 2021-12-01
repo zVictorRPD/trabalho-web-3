@@ -11,7 +11,7 @@
 
         <div class="d-flex justify-content-start">
             <h1 class="page-title">Usuários</h1>
-            <a class="ml-auto" href=""><button class="btn-default btn-green mr-4">Cadastrar</button></a>
+            <a class="ml-auto" href="{{ route('users.create') }}"><button class="btn-default btn-green mr-4">Cadastrar</button></a>
         </div>
 
         <div class="main-card blue-card">
@@ -27,7 +27,7 @@
                         <th class="last-column" style="80px">Ações</th>
                     </thead>
                     <tbody>
-                        {{-- @foreach ($users as $user)
+                        @foreach ($users as $user)
                             <tr id="linha-{{ $user->id }}">
                                 <td class="first-column">{{ $user->id }}</td>
                                 <td>{{ $user->name }}</td>
@@ -54,7 +54,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach --}}
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -163,74 +163,8 @@
                             <button type="submit" class="edit-submit btn-default btn-blue ml-4">Editar</button>
                         </div>
                         @method('PUT');
+                        <input type="hidden" name="_id">
                     </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {{-- Filtro --}}
-    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content modal-content-default">
-                <div class="modal-header-default text-white">
-                    <h5 class="modal-title" id="filterModalLabel">
-                        Filtrar tabela de Voos
-                    </h5>
-                </div>
-
-                <div class="modal-body">
-                    <div class="alert alert-color alert-dismissable" role="alert">
-                        <i style="font-size: 125%" class="fa fa-exclamation-circle mr-2"></i>Este filtro deve responder às
-                        perguntas: 71 e 87
-
-                        <span data-dismiss="alert" class="close p-0" aria-label="Close"></span>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-md-6 px-5 my-2 my-md-4">
-                            <label class="register-label" for="from">Estado Civil</label>
-                            <div class="custom-select-2">
-                                <select class="register-input" name="civil">
-                                    <option value="null">Selecione o estado civil</option>
-                                    <option value="S">Solteiro(a)</option>
-                                    <option value="C">Casado(a)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 px-5 my-2 my-md-4">
-                            <label class="register-label" for="to">Sexo</label>
-                            <div class="custom-select-2">
-                                <select class="register-input" name="sex">
-                                    <option value="null">Selecione o sexo</option>
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Feminino</option>
-                                    <option value="O">Outros</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="filter-table-container" class="table-responsive" style="display: none">
-                        <table id="filter-table" class="table table-stripped dt-bootstrap5">
-                            <thead>
-                                <th class="first-column">Nome</th>
-                                <th>Idade</th>
-                                <th>Data Nasc.</th>
-                                <th class="last-column">Idade acima da média?</th>
-                            </thead>
-                            <tbody id="filter-table-body" style="display: none">
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="btn-div d-flex justify-content-end">
-                        <button type="button" class="filter-dismiss btn-default btn-red"
-                            data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="filter-submit btn-default btn-blue ml-4">Filtrar</button>
-                    </div>
                 </div>
 
             </div>
@@ -240,14 +174,12 @@
 
 @push('js')
     <script>
-        let filter_table = null;
-
         $(function() {
-            $('#table-id').DataTable({
-                language: {
-                    url: "<?= asset('js/datatable.json') ?>"
-                }
-            });
+            // $('#table-id').DataTable({
+            //     language: {
+            //         url: "<?= asset('js/datatable.json') ?>"
+            //     }
+            // });
 
             $('.delete-dismiss').on('click', function() {
                 $('#deleteModal').modal('hide')
@@ -265,9 +197,10 @@
                 let id = $(this).attr('id').split('-')[1];
                 let td_array = $(`#linha-${id}`).children();
                 let input_array = $('#edit-form :input');
-                //$('#edit-form').attr('action', "route('users.update', ['_id_']) ?>".replace('_id_', id));
+
+                $('#edit-form').attr('action', "<?= route('users.update', ['_id_']) ?>".replace('_id_', id));
                 // -1 no for pq ignoramos o @crf e o campo com o id
-                for (i = 0; i < td_array.length - 1; i++) {
+                for (i = 0; i < td_array.length - 2; i++) {
                     if (input_array.eq(i).attr('type') == "hidden") continue;
                     if(input_array.eq(i).attr('type') == undefined){
                         input_array.eq(i).val(td_array.eq(i).html());
@@ -276,62 +209,14 @@
                         input_array.eq(i).val(td_array.eq(i).html());
                     }
                 }
-            });
 
-            $('.radio-input').on('change', function() {
-                if ($(this).val() == "1") {
-                    $('#responsible-div').collapse('show')
-                } else if ($(this).val() == "0") {
-                    $('#responsible-div').collapse('hide')
-                }
-            });
-
-            $('.filter-submit').on('click', function() {
-                const civil = $('select[name=civil]').val();
-                const sex = $('select[name=sex]').val();
-
-                $.ajax({
-                    method: 'GET',
-                    // url: " route('users.filter', ['_civil_', '_sex_']) ?>".replace(
-                    //     '_civil_', civil).replace('_sex_', sex),
-                    success: res => {
-                        $('#filter-table-container').fadeIn();
-                        $('#filter-table-body').fadeOut('swing', function() {
-                            if (filter_table) {
-                                filter_table.destroy();
-
-                                $('#filter-table-body').html('');
-                            }
-
-                            for (let user of res.users) {
-                                $('#filter-table-body').append(`
-                                    <tr>
-                                        <td class="first-column">${user.NM_PSGR}</td>
-                                        <td>${user.ID_PSGR || 'Não Informado'}</td>
-                                        <td>${user.DT_NASC_PSGR != null ? user.DT_NASC_PSGR.split('/').reverse().join('/') : 'Não Informado'}</td>
-                                        <td class="last-column">${user.ID_PSGR != null ? (user.ID_PSGR > res.avg_age ? 'Sim' : 'Não') : '---'}</td>
-                                    </tr>
-                                `);
-                            }
-
-                            filter_table = $('#filter-table').DataTable({
-                                language: {
-                                    url: "<?= asset('js/datatable.json') ?>"
-                                }
-                            });
-
-                            $('#filter-table-body').fadeIn()
-                        });
-                    },
-                    error: err => {
-                        console.log(err);
-                    }
-                });
+                $('input[name=_id]').val(id);
             });
 
             $('.custom-select-2').on('click', function() {
                 $(this).find('.select-selected').addClass('select-item-black');
             });
+
             $('.date').mask('00/00/0000');
         });
     </script>

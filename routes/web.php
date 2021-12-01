@@ -2,23 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function(){
-    return view('users.index');
+Route::group(['prefix' => '/users'], function () {
+    Route::get('/', 'UserController@index')->name('users.index');
+    Route::get('/cadastrar', 'UserController@create')->name('users.create');
+    Route::post('/', 'UserController@store')->name('users.store');
+    Route::get('/{user}', 'UserController@show')->where(['id' => '[0-9]+'])->name('users.show');
+    Route::get('/{user}/editar', 'UserController@edit')->where(['id' => '[0-9]+'])->name('users.edit');
+    Route::put('/{user}', 'UserController@update')->where(['id' => '[0-9]+'])->name('users.update');
+    Route::delete('/{user}', 'UserController@destroy')->where(['id' => '[0-9]+'])->name('users.destroy');
 });
-Route::get('/cadastrar', function(){
-    return view('users.create');
-});
-
-// Route::group(['prefix' => '/'], function () {
-//     Route::get('/', 'HomeController')->name('home');
-
-//     Route::group(['prefix' => 'usuarios'], function () {
-//         Route::get('/', 'UserController@index')->name('users.index');
-//         Route::get('/cadastrar', 'UserController@create')->name('users.create');
-//         Route::get('/{id}', 'UserController@getUser')->name('users.getUser');
-//         Route::post('/', 'UserController@store')->name('users.store');
-//         Route::put('/{id}', 'UserController@update')->name('users.update');
-//         Route::delete('/{id}', 'UserController@destroy')->name('users.destroy');
-//     });
-
-// });
