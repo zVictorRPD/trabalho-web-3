@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidCPF;
 use App\Rules\UniqueCPF;
 use App\Rules\ValidPassword;
 use App\Rules\PasswordRequired;
@@ -27,12 +28,12 @@ class UserFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'cpf' => ['required', new UniqueCPF],
-            'birth' => 'required|date_format:d/m/Y',
-            'sex' => 'required|in:M,F,O',
-            'email' => 'required',
-            'password' => [new PasswordRequired, new ValidPassword]
+            'name' => 'bail|required',
+            'cpf' => ['bail', 'required', 'string', 'size:14', new ValidCPF, new UniqueCPF],
+            'birth' => 'bail|required|date_format:d/m/Y',
+            'sex' => 'bail|required|in:M,F,O',
+            'email' => 'bail|required',
+            'password' => ['bail', new PasswordRequired, new ValidPassword]
         ];
     }
 
@@ -40,6 +41,7 @@ class UserFormRequest extends FormRequest
     {
         return [
             'required' => 'Campo Obrigatório',
+            'cpf.size' => 'O CPF deve estar no formato XXX.XXX.XXX-XX',
             'date_format' => 'A data de nascimento deve estar no formato DD/MM/YYYY',
             'in' => 'Selecione um sexo válido',
         ];
